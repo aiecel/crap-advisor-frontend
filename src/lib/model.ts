@@ -1,15 +1,10 @@
-export type Location = {
-    latitude: number;
-    longitude: number;
-};
-
 export type Restroom = {
     id: number;
-    created: Date;
     name: string;
+    created: Date;
     location: Location;
     rating: number | null;
-}
+};
 
 export type Review = {
     id: number;
@@ -17,4 +12,9 @@ export type Review = {
     created: Date;
     comment: string | null;
     rating: number;
-}
+};
+
+export type Location = {
+    latitude: number;
+    longitude: number;
+};

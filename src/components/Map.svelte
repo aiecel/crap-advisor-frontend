@@ -1,58 +1,78 @@
-<svelte:head>
-    <script src='https://api-maps.yandex.ru/3.0/?lang=ru_RU&amp;apikey=1979b9d5-98ad-4ff1-8015-c4de94371af1'
-            type="text/javascript">
-    </script>
-</svelte:head>
-
-<script>
-    import {onMount} from "svelte";
-    import {restrooms} from "../lib/main";
+<script lang="ts">
+    import { onMount } from "svelte";
+    import { restrooms } from "$lib/store/restroomsStore";
     import RestroomMarker from "./RestroomMarker.svelte";
+    import type { YMap } from "@yandex/ymaps3-types";
+    import { selectedRestroom } from "$lib/store/selectedRestroomStore";
 
-    onMount(() => initMap())
+    let map: YMap;
+    let mapElement: HTMLElement;
+
+    onMount(() => initMap());
+
+    $: $selectedRestroom, centerOnSelectedRestroom(500);
 
     async function initMap() {
-        ymaps3.ready.then(async (ymaps) => {
-            const {YMap, YMapDefaultSchemeLayer, YMapControls, YMapDefaultFeaturesLayer} = ymaps;
-            const {YMapZoomControl} = await ymaps3.import('@yandex/ymaps3-controls@0.0.1');
+        ymaps3.ready.then(async () => {
+            const { YMapZoomControl } = await ymaps3.import(
+                "@yandex/ymaps3-controls@0.0.1"
+            );
 
-            const map = new YMap(document.getElementById('map'), {
-                location: {center: [49, 53], zoom: 10},
-                behaviors: ['drag', 'pinchZoom', 'mouseTilt', 'mouseRotate', 'mouseTilt', 'dblClick']
-            }, [
-                new YMapDefaultSchemeLayer(),
-                new YMapControls({position: 'right'}, [new YMapZoomControl({})]),
-                new YMapDefaultFeaturesLayer({id: 'markers'})
-            ]);
+            map = new ymaps3.YMap(
+                mapElement,
+                {
+                    location: { center: [49, 53], zoom: 10 },
+                    behaviors: [
+                        "drag",
+                        "scrollZoom",
+                        "pinchZoom",
+                        "mouseTilt",
+                        "mouseRotate",
+                        "mouseTilt",
+                        "dblClick",
+                    ],
+                },
+                [
+                    new ymaps3.YMapDefaultSchemeLayer({}),
+                    new ymaps3.YMapControls({ position: "right" }, [
+                        new YMapZoomControl({}),
+                    ]),
+                    new ymaps3.YMapDefaultFeaturesLayer({}),
+                ]
+            );
 
-            restrooms.subscribe(restrooms => {
-                restrooms.forEach(restroom => {
-                    map.addChild(createMarker(restroom, ymaps));
-                })
-            });
+            centerOnSelectedRestroom();
         });
     }
 
-    function createMarker(restroom, ymaps) {
-        const containerElement = document.createElement("div")
-        containerElement.id = "marker"
-
-        new RestroomMarker({
-            target: containerElement,
-            props: {
-                restroom: restroom
-            }
-        });
-
-        const {YMapMarker} = ymaps;
-        return new YMapMarker(
-            {coordinates: [restroom.location.longitude, restroom.location.latitude]},
-            containerElement
-        )
+    function centerOnSelectedRestroom(duration: number = 0) {
+        if (map && $selectedRestroom) {
+            map.setLocation({
+                center: [
+                    $selectedRestroom.location.longitude,
+                    $selectedRestroom.location.latitude,
+                ],
+                duration,
+            });
+        }
     }
 </script>
 
-<div id="map"></div>
+<svelte:head>
+    <script
+        src="https://api-maps.yandex.ru/3.0/?lang=ru_RU&amp;apikey=1979b9d5-98ad-4ff1-8015-c4de94371af1"
+        type="text/javascript"
+    >
+    </script>
+</svelte:head>
+
+<div id="map" bind:this={mapElement}>
+    {#if map}
+        {#each $restrooms as restroom}
+            <RestroomMarker {restroom} {map} />
+        {/each}
+    {/if}
+</div>
 
 <style>
     #map {
