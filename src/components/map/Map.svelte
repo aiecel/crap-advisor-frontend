@@ -67,6 +67,7 @@
 </svelte:head>
 
 <div id="map" bind:this={mapElement}>
+    <h1 id="logo">Crap Advisor</h1>
     {#if map}
         {#each $restrooms as restroom}
             <RestroomMarker {restroom} {map} />
@@ -76,9 +77,15 @@
 
 <style>
     #map {
+        width: 100%;
+        height: 100%;
+    }
+
+    #logo {
+        font-size: 1.6em;
+        color: rgba(0, 0, 0, 0.2);
+        z-index: 54;
         position: absolute;
-        z-index: -54;
-        width: 100vw;
-        height: 100vh;
+        right: 15px;
     }
 </style>

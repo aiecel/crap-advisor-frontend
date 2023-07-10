@@ -8,6 +8,7 @@ function createStore() {
     return {
         subscribe,
         fetchForRestroom: async (restroomId: number) => {
+            set([]);
             getReviews(restroomId)
                 .then((reviews: Review[]) => set(reviews))
                 .catch(() => set([]));

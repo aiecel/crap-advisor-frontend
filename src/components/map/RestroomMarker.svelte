@@ -33,18 +33,14 @@
 
 <!-- svelte-ignore a11y-no-static-element-interactions -->
 <!-- svelte-ignore a11y-click-events-have-key-events -->
-<div
-    id="marker-container"
-    bind:this={markerElement}
-    on:click={() => goto(`${restroom.id}`)}
->
-    <p class="text outlined tooltip">{restroom.name ?? ""}</p>
-    <img class="icon" src="restroom.png" alt={restroom.name} />
-    <p class="text outlined">{restroom.rating ?? ""}</p>
+<div bind:this={markerElement} on:click={() => goto(`${restroom.id}`)}>
+    <p>{restroom.name ?? ""}</p>
+    <img src="restroom.png" alt={restroom.name} />
+    <p>{restroom.rating ?? ""}</p>
 </div>
 
 <style>
-    #marker-container {
+    div {
         text-align: center;
         cursor: pointer;
         position: relative;
@@ -53,22 +49,19 @@
         transition: all 0.1s ease-in-out;
     }
 
-    #marker-container:hover {
+    div:hover {
         transform: scale(1.1);
     }
 
-    .icon {
+    img {
         width: 40px;
         height: 40px;
     }
 
-    .text {
+    p {
         font-size: 12px;
         font-weight: 600;
         margin: 0;
-    }
-
-    .outlined {
         text-shadow: -1px -1px 0 white, 0 -1px 0 white, 1px -1px 0 white,
             1px 0 0 white, 1px 1px 0 white, 0 1px 0 white, -1px 1px 0 white,
             -1px 0 0 white;

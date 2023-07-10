@@ -24,9 +24,9 @@ function createStore() {
                     return currentSelectedRestroomId;
                 }
                 if (restroomIdToSelect) {
-                    reviews.fetchForRestroom(restroomIdToSelect);
+                    //reviews.fetchForRestroom(restroomIdToSelect);
                 } else {
-                    reviews.clear()
+                    //reviews.clear()
                 }
                 return restroomIdToSelect;
             });
