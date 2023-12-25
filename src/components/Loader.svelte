@@ -11,7 +11,7 @@
         margin: 1rem;
         width: 2rem;
         height: 2rem;
-        display: inline-block;
+        display: block;
         box-sizing: border-box;
         animation: rotation 1s linear infinite;
     }

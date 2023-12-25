@@ -1,19 +1,14 @@
 <script lang="ts">
-    import { addReview } from "$lib/api";
-    import type { Restroom } from "$lib/model";
-    import { reviews } from "$lib/store/reviewsStore";
+    import {addReview} from "$lib/api";
+    import type {Restroom} from "$lib/model";
+    import {reviews} from "$lib/store/reviewsStore";
     import Button from "../Button.svelte";
 
     export let restroom: Restroom;
     export let isVisible: Boolean = false;
 
     let dialogElement: HTMLDialogElement;
-
-    let primaryFixtures: number | null = 3;
-    let secondaryFixtures: number | null = 3;
-    let cleanness: number | null = 3;
-    let comfort: number | null = 3;
-    let comment: string | null;
+    let formElement: HTMLFormElement;
 
     $: isVisible, showOrHideDialog();
 
@@ -26,16 +21,7 @@
     }
 
     function submit() {
-        addReview({
-            restroomId: restroom.id,
-            marks: {
-                primaryFixtures,
-                secondaryFixtures,
-                cleanness,
-                comfort,
-            },
-            comment,
-        }).then(() => {
+        addReview(new FormData(formElement)).then(() => {
             isVisible = false;
             reviews.fetchForRestroom(restroom.id);
         });
@@ -45,46 +31,38 @@
 <!-- svelte-ignore a11y-click-events-have-key-events -->
 <!-- svelte-ignore a11y-no-noninteractive-element-interactions -->
 <dialog bind:this={dialogElement} on:close={() => (isVisible = false)}>
-    <h2>Отзыв на</h2>
-    <h1>{restroom.name}</h1>
+    <form bind:this={formElement}>
+        <h2>Отзыв на</h2>
+        <h1>{restroom.name}</h1>
 
-    <label for="primaryFixtures">Первичная сантехника</label>
-    <input
-        bind:value={primaryFixtures}
-        type="range"
-        min="1"
-        max="5"
-        name="primaryFixtures"
-    />
+        <input type="hidden" name="restroomId" value={restroom.id}>
 
-    <label for="secondaryFixtures">Вторичная сантехника</label>
-    <input
-        bind:value={secondaryFixtures}
-        type="range"
-        min="1"
-        max="5"
-        name="secondaryFixtures"
-    />
+        <label for="primaryFixtures">Первичная сантехника</label>
+        <input type="range" min="1" max="5" name="primaryFixtures" />
 
-    <label for="cleanness">Чистота</label>
-    <input
-        bind:value={cleanness}
-        type="range"
-        min="1"
-        max="5"
-        name="cleanness"
-    />
+        <label for="secondaryFixtures">Вторичная сантехника</label>
+        <input type="range" min="1" max="5" name="secondaryFixtures" />
 
-    <label for="comfort">Комфорт</label>
-    <input bind:value={comfort} type="range" min="1" max="5" name="comfort" />
+        <label for="cleanness">Чистота</label>
+        <input type="range" min="1" max="5" name="cleanness" />
 
-    <label for="comment">Отзыв</label>
-    <textarea bind:value={comment} name="comment" />
+        <label for="comfort">Комфорт</label>
+        <input type="range" min="1" max="5" name="comfort" />
 
-    <pre />
+        <label for="comment">Отзыв</label>
+        <textarea name="comment" />
 
-    <Button onClick={submit}>Оставить отзыв</Button>
-    <Button onClick={() => (isVisible = false)}>Назад</Button>
+        <label for="images">Фото</label>
+        <input
+            type="file"
+            name="images"
+            accept="image/png, image/gif, image/jpeg"
+            multiple
+        />
+
+        <Button onClick={submit}>Оставить отзыв</Button>
+        <Button onClick={() => (isVisible = false)}>Назад</Button>
+    </form>
 </dialog>
 
 <style>

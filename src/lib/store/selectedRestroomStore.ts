@@ -1,16 +1,15 @@
-import { derived, writable } from "svelte/store";
-import { reviews } from "./reviewsStore";
-import { restrooms } from "./restroomsStore";
+import {derived, writable} from "svelte/store";
+import {restrooms} from "./restroomsStore";
 
 const selectedRestroomIdStore = writable<number | null>(null);
 
 const selectedRestroomStore = derived(
     [selectedRestroomIdStore, restrooms],
-    ([$selectedRestroomId, $restrooms]) => {
-        if (!$selectedRestroomId) {
+    ([selectedRestroomId, restrooms]) => {
+        if (!selectedRestroomId) {
             return null;
         }
-        return $restrooms.find(restroom => restroom.id == $selectedRestroomId);
+        return restrooms.find(restroom => restroom.id == selectedRestroomId);
     },
     null
 );

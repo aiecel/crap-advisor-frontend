@@ -1,12 +1,17 @@
 <script lang="ts">
-    import { onMount } from "svelte";
-    import { restrooms } from "$lib/store/restroomsStore";
+    import {onMount} from "svelte";
+    import {restrooms} from "$lib/store/restroomsStore";
     import RestroomMarker from "./RestroomMarker.svelte";
-    import type { YMap } from "@yandex/ymaps3-types";
-    import { selectedRestroom } from "$lib/store/selectedRestroomStore";
+    import type {YMap} from "@yandex/ymaps3-types";
+    import {selectedRestroom} from "$lib/store/selectedRestroomStore";
+    import {cities} from "$lib/store/cityStore";
+    import CityMarker from "./CityMarker.svelte";
 
     let map: YMap;
     let mapElement: HTMLElement;
+
+    const restroomZoom = 10;
+    let mapZoom: number = 0;
 
     onMount(() => initMap());
 
@@ -27,7 +32,6 @@
                         "scrollZoom",
                         "pinchZoom",
                         "mouseTilt",
-                        "mouseRotate",
                         "mouseTilt",
                         "dblClick",
                     ],
@@ -35,9 +39,15 @@
                 [
                     new ymaps3.YMapDefaultSchemeLayer({}),
                     new ymaps3.YMapControls({ position: "right" }, [
-                        new YMapZoomControl({}),
+                        new YMapZoomControl({
+                            easing: "ease",
+                        }),
                     ]),
                     new ymaps3.YMapDefaultFeaturesLayer({}),
+                    new ymaps3.YMapListener({
+                        layer: 'any',
+                        onUpdate: onMapUpdate
+                    })
                 ]
             );
 
@@ -56,6 +66,10 @@
             });
         }
     }
+
+    function onMapUpdate() {
+        mapZoom = map.zoom
+    }
 </script>
 
 <svelte:head>
@@ -68,9 +82,14 @@
 
 <div id="map" bind:this={mapElement}>
     <h1 id="logo">Crap Advisor</h1>
-    {#if map}
-        {#each $restrooms as restroom}
+    {#if map && mapZoom > restroomZoom}
+        {#each $restrooms as restroom (restroom.id)}
             <RestroomMarker {restroom} {map} />
+        {/each}
+    {/if}
+    {#if map && mapZoom <= restroomZoom}
+        {#each $cities as city (city.id)}
+            <CityMarker {city} {map} />
         {/each}
     {/if}
 </div>
@@ -79,6 +98,8 @@
     #map {
         width: 100%;
         height: 100%;
+        max-width: 100%;
+        max-height: 100%;
     }
 
     #logo {

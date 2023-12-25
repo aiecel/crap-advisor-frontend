@@ -1,6 +1,6 @@
 <script lang="ts">
-    import type { Restroom } from "$lib/model";
-    import { getReviews } from "$lib/api";
+    import type {Restroom} from "$lib/model";
+    import {getReviews} from "$lib/api";
     import Button from "../Button.svelte";
     import AddReviewDialog from "../dialog/AddReviewDialog.svelte";
     import Review from "./Review.svelte";
@@ -17,7 +17,7 @@
 <section>
     <h1>Отзывы</h1>
     {#await reviewsPromise}
-        <div class="text">
+        <div class="section-header">
             <Loader />
         </div>
     {:then reviews}
@@ -26,7 +26,7 @@
                 <p>Отзывов пока нет</p>
             </div>
         {/if}
-        <div class="button-container">
+        <div class="section-header">
             <Button onClick={() => (isAddReviewDialogVisible = true)}>
                 + Добавить отзыв
             </Button>
@@ -53,7 +53,7 @@
         text-align: center;
     }
 
-    .button-container :global(button) {
+    .section-header :global(*) {
         display: block;
         margin: 1rem auto;
     }

@@ -1,8 +1,9 @@
 <script lang="ts">
-    import type { Review } from "$lib/model";
-    import { format } from "date-fns";
-    import { ru } from "date-fns/locale";
+    import type {Review} from "$lib/model";
+    import {format} from "date-fns";
+    import {ru} from "date-fns/locale";
     import Rating from "../Rating.svelte";
+    import Image from "../Image.svelte";
 
     export let review: Review;
 </script>
@@ -17,6 +18,16 @@
         <p class="rating">{review.rating}</p>
         <Rating class="rating-stars" rating={review.rating} />
     </div>
+    {#if review.images.length > 0}
+        <div class="images-container">
+            {#each review.images as image}
+                <Image
+                    src={"http://localhost:9000/" + image.thumbnailPath}
+                    alt="Туалет"
+                />
+            {/each}
+        </div>
+    {/if}
     {#if review.comment}
         <p>{review.comment}</p>
     {/if}
@@ -53,5 +64,23 @@
 
     .rating-container :global(.rating-stars) {
         margin: auto 0.5rem;
+    }
+
+    .images-container {
+        margin-block: 0.5rem;
+        display: flex;
+        gap: 0.5rem;
+    }
+
+    .images-container :global(.image) {
+        background-color: #eeeeee;
+        height: 5rem;
+        border-radius: 0.5rem;
+        cursor: pointer;
+        transition: all 0.1s ease-in-out;
+    }
+
+    .images-container :global(.image:hover) {
+        transform: scale(1.1);
     }
 </style>

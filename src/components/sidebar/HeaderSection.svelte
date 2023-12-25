@@ -1,8 +1,8 @@
 <script lang="ts">
-    import { format } from "date-fns";
-    import { ru } from "date-fns/locale";
+    import {format} from "date-fns";
+    import {ru} from "date-fns/locale";
     import Rating from "../Rating.svelte";
-    import type { Restroom } from "$lib/model";
+    import type {Restroom} from "$lib/model";
 
     export let restroom: Restroom;
 
@@ -36,7 +36,10 @@
     section {
         position: relative;
         height: 20vh;
-        background-color: hsl(var(--hue), 100%, 40%);
+        /* background-color: hsl(var(--hue), 100%, 40%); */
+        background-image: url("http://localhost:9000/test/fmrcmP1OEzI%20(1).jpg");
+        background-size: cover;
+        background-position: 0 -120px;
     }
 
     p,
@@ -56,6 +59,7 @@
         position: absolute;
         bottom: 0;
         padding: 1rem;
+        background: linear-gradient(transparent, rgba(0, 0, 0, 0.4));
     }
 
     .rating {

@@ -1,4 +1,4 @@
-import type { Marks, Restroom, Review } from "./model";
+import type {Area, City, Marks, Restroom, Review} from "./model";
 
 const API_HOST = "http://localhost:8082";
 
@@ -9,9 +9,20 @@ export type AddReviewRequest = {
 };
 
 export async function getAllRestrooms(): Promise<Array<Restroom>> {
-    return await fetch(API_HOST + "/restrooms").then(
-        async response => await response.json()
-    );
+    return await fetch(API_HOST + "/restrooms")
+        .then(async response => await response.json())
+        .catch(reason => console.error(reason));
+}
+
+export async function getBestRestroomsForArea(area: Area): Promise<Array<Restroom>> {
+    return await fetch(API_HOST + "/restrooms/best?" + new URLSearchParams({
+        fromLatitude: area.fromLocation.latitude.toString(),
+        fromLongitude: area.fromLocation.longitude.toString(),
+        toLatitude: area.toLocation.latitude.toString(),
+        toLongitude: area.toLocation.longitude.toString()
+    }))
+        .then(async response => await response.json())
+        .catch(reason => console.error(reason));
 }
 
 export async function getReviews(restroomId: number): Promise<Array<Review>> {
@@ -20,14 +31,17 @@ export async function getReviews(restroomId: number): Promise<Array<Review>> {
     );
 }
 
-export async function addReview(request: AddReviewRequest): Promise<Review> {
+export async function addReview(formData: FormData): Promise<Review> {
     return await fetch(API_HOST + "/reviews", {
         method: "POST",
-        headers: {
-            "Content-Type": "application/json",
-        },
-        body: JSON.stringify(request),
+        body: formData,
     })
+        .then(async response => await response.json())
+        .catch(reason => console.error(reason));
+}
+
+export async function getAllCities(): Promise<Array<City>> {
+    return await fetch(API_HOST + "/cities")
         .then(async response => await response.json())
         .catch(reason => console.error(reason));
 }

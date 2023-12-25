@@ -13,11 +13,7 @@ export type Review = {
     comment: string | null;
     rating: number;
     marks: Marks;
-};
-
-export type Location = {
-    latitude: number;
-    longitude: number;
+    images: Array<Image>
 };
 
 export type Marks = {
@@ -26,3 +22,25 @@ export type Marks = {
     cleanness: number | null;
     comfort: number | null;
 };
+
+export type Image = {
+    originalPath: string,
+    thumbnailPath: string
+};
+
+export type City = {
+    id: number;
+    name: string;
+    created: Date;
+    location: Location;
+};
+
+export type Location = {
+    latitude: number;
+    longitude: number;
+};
+
+export type Region = {
+    fromLocation: Location,
+    toLocation: Location
+}

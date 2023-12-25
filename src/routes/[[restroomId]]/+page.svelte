@@ -2,8 +2,8 @@
     import Sidebar from "../../components/sidebar/Sidebar.svelte";
     import Map from "../../components/map/Map.svelte";
 
-    import { page } from "$app/stores";
-    import { selectedRestroom } from "$lib/store/selectedRestroomStore";
+    import {page} from "$app/stores";
+    import {selectedRestroom} from "$lib/store/selectedRestroomStore";
 
     $: $page.params, selectedRestroom.select(parseInt($page.params.restroomId));
 </script>
@@ -21,7 +21,7 @@
     @import url("https://fonts.googleapis.com/css2?family=Geologica:wght@300;400;500;600;700&display=swap");
 
     :global(body) {
-        font-family: "Geologica";
+        font-family: "Geologica", Helvetica, sans-serif;
         margin: 0;
     }
 
@@ -35,7 +35,7 @@
 
     @media (min-width: 60em) {
         .main {
-            grid-template-columns: 30em calc(100vw - 30em);
+            grid-template-columns: 32em calc(100vw - 32em);
         }
     }
 
